@@ -29,5 +29,6 @@ struct wav_header {
 };
 
 int16_t *wav_decoder(FILE *fp);
+struct wav_header read_wav_header(FILE *fp);
 
 #endif

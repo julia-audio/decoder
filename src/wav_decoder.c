@@ -55,7 +55,7 @@ int16_t *pcm_convert(const float *data, size_t num_samples) {
   if (!int_data)
     return NULL;
 
-  for (int i = 0; i < num_samples; ++i) {
+  for (size_t i = 0; i < num_samples; ++i) {
     float sample = data[i];
 
     if (sample > 1.0f)
@@ -74,8 +74,6 @@ int16_t *wav_decoder(FILE *fp) {
   struct wav_header wh = read_wav_header(fp);
   size_t num_samples = wh.subchunk2_size / (wh.bits_per_sample / 8);
   int16_t *buffer = malloc(wh.subchunk2_size);
-
-  buffer = NULL;
 
   if (wh.audio_format == 1 && wh.bits_per_sample == 16) {
     fread(buffer, sizeof(int16_t), num_samples, fp);
