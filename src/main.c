@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "mp3_decoder.h"
 #include "wav_decoder.h"
 
 void render_text(float x, float y, const char *text) {
@@ -64,24 +65,10 @@ void draw_header_info(const struct wav_header wh, const char *filename) {
   render_text(-0.95f, 0.10f, buf);
 }
 
-int main(int argc, char *argv[]) {
-  char *filename = NULL;
-
-  if (argc < 2) {
-    return EXIT_FAILURE;
-  }
-
-  filename = argv[1];
-
-  FILE *file = fopen(filename, "rb");
-  if (!file) {
-    fprintf(stderr, "Faild to open file %s\n", filename);
-    return EXIT_FAILURE;
-  }
-
+void draw(int argc, char **argv, const char *filename, FILE *fp) {
   if (!glfwInit()) {
-    fprintf(stderr, "Failed to initialize GLFW\n");
-    return EXIT_FAILURE;
+    fprintf(stderr, "failed to initailize GLFW\n");
+    exit(EXIT_FAILURE);
   }
 
   glfwWindowHintString(GLFW_WAYLAND_APP_ID, "decoder");
@@ -89,20 +76,20 @@ int main(int argc, char *argv[]) {
   if (!window) {
     fprintf(stderr, "Failed to create window\n");
     glfwTerminate();
-    return EXIT_FAILURE;
+    exit(EXIT_FAILURE);
   }
 
   glfwMakeContextCurrent(window);
   glewInit();
   glutInit(&argc, argv);
 
-  struct wav_header wh = read_wav_header(file);
-  int16_t *buffer = wav_decoder(file);
-  fclose(file);
+  struct wav_header wh = read_wav_header(fp);
+  int16_t *buffer = wav_decoder(fp);
+  fclose(fp);
 
   if (!buffer) {
     fprintf(stderr, "Failed to decode wav\n");
-    return EXIT_FAILURE;
+    exit(EXIT_FAILURE);
   }
 
   size_t num_samples = wh.subchunk2_size / (wh.bits_per_sample / 8);
@@ -134,6 +121,25 @@ int main(int argc, char *argv[]) {
   free(points);
   glfwDestroyWindow(window);
   glfwTerminate();
+}
+
+int main(int argc, char *argv[]) {
+  char *filename = NULL;
+
+  if (argc < 2) {
+    return EXIT_FAILURE;
+  }
+
+  filename = argv[1];
+
+  FILE *file = fopen(filename, "rb");
+  if (!file) {
+    fprintf(stderr, "Faild to open file %s\n", filename);
+    return EXIT_FAILURE;
+  }
+
+  // draw(argc, argv, filename, file);
+  read_mp3_header(file);
 
   return 0;
 }

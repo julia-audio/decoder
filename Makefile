@@ -4,8 +4,8 @@ TARGET = $(BUILD_DIR)/decoder
 PKG_CONFIG_LIBS=$(shell pkg-config --libs glew glfw3 glut)
 PKG_CONFIG_CFLAGS=$(shell pkg-config --cflags glew glfw3 glut)
 
-TARGET_FILES 		= src/main.c src/wav_decoder.c
-TARGET_HEADERS 	= src/wav_decoder.h
+TARGET_FILES 		= src/main.c src/wav_decoder.c src/mp3_decoder.c
+TARGET_HEADERS 	= src/wav_decoder.h src/mp3_decoder.h
 
 CFLAGS = -Wall -Wextra -pedantic -std=c99 $(PKG_CONFIG_CFLAGS)
 LDFLAGS = -lm $(PKG_CONFIG_LIBS)
