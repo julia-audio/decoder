@@ -96,6 +96,8 @@ struct mp3_header read_mp3_header(FILE *fp) {
   return mh;
 }
 
+// @TODO MP3(MPEG) TO PCM
+
 int16_t *mp3_decoder(FILE *fp) {
   rewind(fp);
   read_mp3_header(fp);
